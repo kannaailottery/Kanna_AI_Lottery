@@ -2,7 +2,7 @@ const { Connection, PublicKey, LAMPORTS_PER_SOL, Transaction } = require('@solan
 
 const NETWORK = 'mainnet-beta';
 const TREASURY_WALLET = new PublicKey('2Y7J5xpeVr9KpBoFxqjUj3wa4sbuvSWftYcBCv69tsyr');
-const TICKET_PRICE = 0.001 * LAMPORTS_PER_SOL; // 0.001 SOL en lamports
+const TICKET_PRICE = 0.05 * LAMPORTS_PER_SOL; // 0.05 SOL en lamports
 
 // Configurar conexión a Solana
 const connection = new Connection(
