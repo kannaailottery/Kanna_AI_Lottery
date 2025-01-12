@@ -15,47 +15,21 @@ const server = http.createServer(app);
 
 // Configuración de CORS
 app.use(cors({
-  origin: function(origin, callback) {
-    // Permitir requests sin origin (como mobile apps o curl)
-    if (!origin) return callback(null, true);
-    
-    // Permitir localhost y dominios autorizados
-    if (
-      origin === 'http://localhost:3000' ||
-      origin === 'https://kanna-ai-lottery.vercel.app' ||
-      origin === 'https://kannasol.xyz' ||
-      origin.endsWith('.vercel.app')
-    ) {
-      callback(null, true);
-    } else {
-      console.log('Origin blocked:', origin);
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: true, // Permitir todos los orígenes durante el desarrollo
   methods: ['GET', 'POST'],
   credentials: true
 }));
 
 const io = new Server(server, {
   cors: {
-    origin: function(origin, callback) {
-      if (!origin) return callback(null, true);
-      
-      if (
-        origin === 'http://localhost:3000' ||
-        origin === 'https://kanna-ai-lottery.vercel.app' ||
-        origin === 'https://kannasol.xyz' ||
-        origin.endsWith('.vercel.app')
-      ) {
-        callback(null, true);
-      } else {
-        console.log('WebSocket origin blocked:', origin);
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
+    origin: true, // Permitir todos los orígenes durante el desarrollo
     methods: ['GET', 'POST'],
     credentials: true
-  }
+  },
+  transports: ['polling', 'websocket'],
+  allowEIO3: true,
+  pingTimeout: 60000,
+  pingInterval: 25000
 });
 
 app.use(express.json());
