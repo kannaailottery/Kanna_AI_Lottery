@@ -10,6 +10,7 @@ import {
   LAMPORTS_PER_SOL,
   Connection
 } from '@solana/web3.js';
+import PhantomWarningModal from './PhantomWarningModal';
 
 const TREASURY_WALLET = new PublicKey('2Y7J5xpeVr9KpBoFxqjUj3wa4sbuvSWftYcBCv69tsyr');
 const TICKET_PRICE = 0.05; // SOL
@@ -27,6 +28,7 @@ export default function TicketSelector() {
   const { buyTicket, isTicketSold, isUserTicket, ticketsSold } = useLottery();
   const [selectedTickets, setSelectedTickets] = useState<number[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [showPhantomWarning, setShowPhantomWarning] = useState(false);
   const { publicKey, sendTransaction } = useWallet();
   
   const TOTAL_TICKETS = 20;
@@ -43,9 +45,20 @@ export default function TicketSelector() {
 
   const handleBuyTickets = async () => {
     if (!publicKey || isProcessing) return;
+    
+    // Mostrar el modal de advertencia primero
+    setShowPhantomWarning(true);
+  };
+
+  const proceedWithPurchase = async () => {
+    setShowPhantomWarning(false);
     setIsProcessing(true);
 
     try {
+      if (!publicKey) {
+        throw new Error('No wallet connected');
+      }
+
       const lamports = Math.floor(TICKET_PRICE * LAMPORTS_PER_SOL * selectedTickets.length);
       console.log('Sending', lamports / LAMPORTS_PER_SOL, 'SOL');
 
@@ -192,6 +205,14 @@ export default function TicketSelector() {
           {isProcessing ? 'Processing...' : 'Buy Tickets'}
         </button>
       </div>
+
+      <PhantomWarningModal 
+        isOpen={showPhantomWarning} 
+        onClose={() => {
+          setShowPhantomWarning(false);
+          proceedWithPurchase();
+        }} 
+      />
     </div>
   );
 } 
