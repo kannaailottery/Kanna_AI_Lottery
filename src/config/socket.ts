@@ -8,9 +8,7 @@ export const socket = io(SOCKET_URL, {
   transports: ['websocket', 'polling'],
   reconnectionAttempts: 5,
   reconnectionDelay: 1000,
-  autoConnect: true,
-  secure: true,
-  rejectUnauthorized: false
+  autoConnect: true
 });
 
 socket.on('connect', () => {
