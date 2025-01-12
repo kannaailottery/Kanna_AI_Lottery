@@ -19,13 +19,11 @@ app.use(cors({
     // Permitir requests sin origin (como mobile apps o curl)
     if (!origin) return callback(null, true);
     
-    // Permitir localhost y dominios autorizados
+    // Permitir localhost y cualquier subdominio de vercel.app
     if (
       origin === 'http://localhost:3000' ||
       origin === 'https://kanna-ai-lottery.vercel.app' ||
-      origin.endsWith('.vercel.app') ||
-      origin === 'https://kannasol.xyz' ||
-      origin === 'http://kannasol.xyz'
+      origin.endsWith('.vercel.app')
     ) {
       callback(null, true);
     } else {
@@ -45,9 +43,7 @@ const io = new Server(server, {
       if (
         origin === 'http://localhost:3000' ||
         origin === 'https://kanna-ai-lottery.vercel.app' ||
-        origin.endsWith('.vercel.app') ||
-        origin === 'https://kannasol.xyz' ||
-        origin === 'http://kannasol.xyz'
+        origin.endsWith('.vercel.app')
       ) {
         callback(null, true);
       } else {
