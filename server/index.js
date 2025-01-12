@@ -14,22 +14,20 @@ const app = express();
 const server = http.createServer(app);
 
 // Configuración de CORS
-app.use(cors({
-  origin: true, // Permitir todos los orígenes durante el desarrollo
-  methods: ['GET', 'POST'],
-  credentials: true
-}));
+app.use(cors());
 
 const io = new Server(server, {
   cors: {
-    origin: true, // Permitir todos los orígenes durante el desarrollo
-    methods: ['GET', 'POST'],
-    credentials: true
+    origin: "*",
+    methods: ["GET", "POST"],
+    allowedHeaders: ["*"],
+    credentials: false
   },
-  transports: ['polling', 'websocket'],
-  allowEIO3: true,
-  pingTimeout: 60000,
-  pingInterval: 25000
+  path: '/socket.io/',
+  serveClient: false,
+  pingInterval: 10000,
+  pingTimeout: 5000,
+  cookie: false
 });
 
 app.use(express.json());
