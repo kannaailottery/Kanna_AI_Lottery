@@ -15,23 +15,23 @@ export default function PhantomWarningModal({ isOpen, onClose }: PhantomWarningM
           <div className="bg-yellow-500/20 p-2 rounded-lg">
             <span className="text-2xl">⚠️</span>
           </div>
-          <h3 className="text-xl font-orbitron text-white">Aviso Importante</h3>
+          <h3 className="text-xl font-orbitron text-white">Important Notice</h3>
         </div>
         
         <div className="space-y-4 text-kanna-200">
           <p>
-            Como somos una lotería nueva en Solana, es posible que veas un mensaje de advertencia de Phantom:
+            As we are a new lottery on Solana, you may see a warning message from Phantom:
             <span className="block mt-2 p-2 bg-red-500/10 rounded text-red-300 text-sm">
               "This dApp could be malicious..."
             </span>
           </p>
           
           <p>
-            Esto es normal para aplicaciones nuevas y se resolverá cuando tengamos más transacciones y confianza en la red.
+            This is normal for new applications and will be resolved as we build trust and transaction history on the network.
           </p>
           
           <p className="text-kanna-300">
-            ¡Tu participación nos ayuda a construir esa confianza! Puedes continuar de forma segura haciendo clic en "Proceed anyway".
+            Your participation helps us build that trust! You can safely continue by clicking "Proceed anyway".
           </p>
         </div>
 
@@ -40,7 +40,7 @@ export default function PhantomWarningModal({ isOpen, onClose }: PhantomWarningM
             onClick={onClose}
             className="px-4 py-2 bg-kanna-600 text-white rounded-lg hover:bg-kanna-700 transition-colors font-medium"
           >
-            Entendido
+            I Understand
           </button>
         </div>
       </div>
