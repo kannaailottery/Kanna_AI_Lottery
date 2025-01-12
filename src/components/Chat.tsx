@@ -1,10 +1,8 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import io from 'socket.io-client';
+import { socket } from '../config/socket';
 import { useLottery } from '../context/LotteryContext';
-
-const socket = io('http://localhost:3002');
 
 interface Message {
   text: string;

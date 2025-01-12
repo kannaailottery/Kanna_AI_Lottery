@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useEffect } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
-import io from 'socket.io-client';
+import { socket } from '../config/socket';
 
 interface RoundInfo {
   startTime: number;
@@ -36,8 +36,6 @@ const LotteryContext = createContext<LotteryContextType>({
   isTicketSold: () => false,
   isUserTicket: () => false
 });
-
-const socket = io('http://localhost:3002');
 
 export function LotteryProvider({ children }: { children: React.ReactNode }) {
   const [timeRemaining, setTimeRemaining] = useState(3600);

@@ -1,14 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import io from 'socket.io-client';
+import { socket } from '../config/socket';
 
 interface LeaderboardEntry {
   wallet: string;
   tickets: number;
 }
-
-const socket = io('http://localhost:3002');
 
 export default function Leaderboard() {
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
