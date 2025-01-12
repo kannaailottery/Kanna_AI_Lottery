@@ -5,11 +5,12 @@ const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:3002'
 console.log('Connecting to socket URL:', SOCKET_URL);
 
 export const socket = io(SOCKET_URL, {
-  transports: ['polling'],
+  transports: ['websocket', 'polling'],
   reconnectionAttempts: 5,
   reconnectionDelay: 1000,
   autoConnect: true,
-  path: '/socket.io'
+  secure: true,
+  rejectUnauthorized: false
 });
 
 socket.on('connect', () => {

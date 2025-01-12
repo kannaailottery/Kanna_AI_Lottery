@@ -47,7 +47,9 @@ const io = new Server(server, {
         origin === 'https://kanna-ai-lottery.vercel.app' ||
         origin.endsWith('.vercel.app') ||
         origin === 'https://kannasol.xyz' ||
-        origin === 'http://kannasol.xyz'
+        origin === 'http://kannasol.xyz' ||
+        origin === 'https://www.kannasol.xyz' ||
+        origin === 'http://www.kannasol.xyz'
       ) {
         callback(null, true);
       } else {
@@ -57,7 +59,9 @@ const io = new Server(server, {
     },
     methods: ['GET', 'POST'],
     credentials: true
-  }
+  },
+  allowEIO3: true,
+  transports: ['websocket', 'polling']
 });
 
 app.use(express.json());
