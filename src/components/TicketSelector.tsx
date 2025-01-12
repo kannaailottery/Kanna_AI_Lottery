@@ -10,7 +10,6 @@ import {
   LAMPORTS_PER_SOL,
   Connection
 } from '@solana/web3.js';
-import PhantomWarningModal from './PhantomWarningModal';
 
 const TREASURY_WALLET = new PublicKey('2Y7J5xpeVr9KpBoFxqjUj3wa4sbuvSWftYcBCv69tsyr');
 const TICKET_PRICE = 0.05; // SOL
@@ -24,11 +23,14 @@ const connection = new Connection(
   }
 );
 
-export default function TicketSelector() {
+interface TicketSelectorProps {
+  onShowPhantomWarning: () => void;
+}
+
+export default function TicketSelector({ onShowPhantomWarning }: TicketSelectorProps) {
   const { buyTicket, isTicketSold, isUserTicket, ticketsSold } = useLottery();
   const [selectedTickets, setSelectedTickets] = useState<number[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [showPhantomWarning, setShowPhantomWarning] = useState(false);
   const { publicKey, sendTransaction } = useWallet();
   
   const TOTAL_TICKETS = 20;
@@ -45,105 +47,7 @@ export default function TicketSelector() {
 
   const handleBuyTickets = async () => {
     if (!publicKey || isProcessing) return;
-    
-    // Mostrar el modal de advertencia primero
-    setShowPhantomWarning(true);
-  };
-
-  const proceedWithPurchase = async () => {
-    setShowPhantomWarning(false);
-    setIsProcessing(true);
-
-    try {
-      if (!publicKey) {
-        throw new Error('No wallet connected');
-      }
-
-      const lamports = Math.floor(TICKET_PRICE * LAMPORTS_PER_SOL * selectedTickets.length);
-      console.log('Sending', lamports / LAMPORTS_PER_SOL, 'SOL');
-
-      const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
-      
-      const transaction = new Transaction({
-        feePayer: publicKey,
-        blockhash,
-        lastValidBlockHeight,
-      }).add(
-        SystemProgram.transfer({
-          fromPubkey: publicKey,
-          toPubkey: TREASURY_WALLET,
-          lamports: lamports
-        })
-      );
-
-      // Enviar transacción con opciones personalizadas
-      const signature = await sendTransaction(transaction, connection, {
-        skipPreflight: false,
-        preflightCommitment: 'processed',
-        maxRetries: 5,
-      });
-      
-      console.log('Transaction sent:', signature);
-
-      // Esperar confirmación con timeout personalizado
-      let done = false;
-      let confirmationError = null;
-
-      const confirmationPromise = (async () => {
-        try {
-          const confirmation = await connection.confirmTransaction({
-            signature,
-            blockhash,
-            lastValidBlockHeight,
-          }, 'processed');
-
-          if (confirmation.value.err) {
-            throw new Error('Transaction failed: ' + confirmation.value.err.toString());
-          }
-          done = true;
-        } catch (error) {
-          confirmationError = error;
-        }
-      })();
-
-      // Esperar con timeout y polling
-      for (let i = 0; i < 30 && !done; i++) {
-        if (confirmationError) throw confirmationError;
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        
-        // Verificar estado de la transacción
-        const status = await connection.getSignatureStatus(signature);
-        if (status.value?.err) {
-          throw new Error('Transaction failed: ' + status.value.err.toString());
-        }
-        if (status.value?.confirmationStatus === 'confirmed' || status.value?.confirmationStatus === 'finalized') {
-          done = true;
-          break;
-        }
-      }
-
-      if (!done) {
-        throw new Error('Transaction confirmation timeout');
-      }
-
-      // Si llegamos aquí, la transacción fue exitosa
-      console.log('Transaction successful');
-
-      // Procesar tickets comprados
-      for (const ticketNumber of selectedTickets) {
-        const success = await buyTicket(ticketNumber);
-        if (success) {
-          setSelectedTickets(prev => prev.filter(t => t !== ticketNumber));
-        }
-      }
-
-      alert('¡Tickets comprados con éxito!');
-    } catch (error) {
-      console.error('Error buying tickets:', error);
-      alert('Error al comprar tickets. Por favor, intenta de nuevo.');
-    } finally {
-      setIsProcessing(false);
-    }
+    onShowPhantomWarning();
   };
 
   const getTicketStatus = (ticketNumber: number) => {
@@ -205,14 +109,6 @@ export default function TicketSelector() {
           {isProcessing ? 'Processing...' : 'Buy Tickets'}
         </button>
       </div>
-
-      <PhantomWarningModal 
-        isOpen={showPhantomWarning} 
-        onClose={() => {
-          setShowPhantomWarning(false);
-          proceedWithPurchase();
-        }} 
-      />
     </div>
   );
 } 
